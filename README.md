@@ -13,18 +13,15 @@ address, enforces a cooldown, and (once a real node is configured) sends a rando
 - `/help` - posts the usage/amount/cooldown info as an ephemeral embed, including the faucet's
   **current balance** (queried live from the node) and its topup address if `FAUCET_TOPUP_ADDRESS`
   is set.
-- `/faucet-setup` (admin only, requires Manage Server) - posts that same embed (minus the balance -
-  see note below) into the current channel and pins it, unpinning any previous copy the bot posted.
-  Run it once per channel you want the instructions pinned in; re-run it after changing
-  `FAUCET_MIN_AMOUNT`/`FAUCET_MAX_AMOUNT`/`FAUCET_COOLDOWN_HOURS` to refresh the pinned text. Needs
+- `/faucet-setup` (admin only, requires Manage Server) - posts that same embed, balance included,
+  into the current channel and pins it, unpinning any previous copy the bot posted. Since the pinned
+  copy isn't refreshed automatically, re-run it whenever you want the balance (or the amount/cooldown
+  text, after changing `FAUCET_MIN_AMOUNT`/`FAUCET_MAX_AMOUNT`/`FAUCET_COOLDOWN_HOURS`) updated. Needs
   the bot to have Send Messages and Manage Messages permissions in that channel.
 
 The public `/faucet` page also shows the live balance and topup address (via `GET /faucet/status`,
 unauthenticated/read-only - deliberately under `/faucet`, not `/api`, so it's covered by the same
 nginx location as the page itself; see the deployment note below).
-
-Note: the pinned `/faucet-setup` message deliberately omits the live balance - a snapshot balance
-left pinned would go stale the moment the faucet pays out again. Use `/help` for a fresh number.
 
 ## Architecture
 

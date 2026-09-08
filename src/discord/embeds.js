@@ -5,10 +5,11 @@ const logger = require('../utils/logger');
 
 /**
  * @param {{ includeBalance?: boolean }} options - includeBalance defaults to
- *   false because this embed is also used for the pinned channel intro
- *   (src/discord/commands/setupIntro.js), which isn't refreshed automatically.
- *   A live balance snapshot left pinned would go stale the moment the faucet
- *   pays out again, so only opt in for commands that render it fresh each time.
+ *   false and does one extra RPC round-trip when true. Callers that render
+ *   this embed fresh each time (e.g. /help) should pass true; be cautious
+ *   opting in anywhere the result might sit around unrefreshed (e.g. pinned
+ *   in a channel) since the balance will go stale as soon as the faucet
+ *   pays out again.
  */
 async function buildFaucetInfoEmbed({ includeBalance = false } = {}) {
   const embed = new EmbedBuilder()

@@ -28,7 +28,7 @@ async function execute(interaction) {
       await message.unpin().catch(() => {});
     }
 
-    const embed = await buildFaucetInfoEmbed();
+    const embed = await buildFaucetInfoEmbed({ includeBalance: true });
     const posted = await interaction.channel.send({ embeds: [embed] });
     await posted.pin();
 
