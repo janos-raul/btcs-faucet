@@ -85,7 +85,35 @@ native/optional deps. Fine for faucet-scale claim volume; the file is rewritten 
 Run this process behind a reverse proxy (nginx/Caddy) that terminates TLS for `bitcoinsilver.eu`
 and forwards **only `/faucet`** (the info page + `GET /faucet/status`) to this app's `PORT`.
 **`/api/claim` is not proxied publicly at all** - it's only ever called by this app's own Discord
-bot process over loopback (127.0.0.1), gated by the HMAC signature regardless.
+bot process over loopback (127.0.0.1), gated by the HMAC signature regardless. The app itself binds
+to `127.0.0.1` too (see `src/web/server.js`), so it's unreachable directly even if the host firewall
+were ever misconfigured.
+
+### Continuous deployment
+
+`.github/workflows/deploy.yml` deploys on every push to `master` (and via manual
+`workflow_dispatch`), by SSHing into the server and running `deploy.sh`, which does a `git fetch` +
+`git reset --hard origin/master` + `npm install --omit=dev` + `pm2 restart btcs-faucet`. It never
+touches `.env`, `data/`, or `node_modules/` - all gitignored/untracked, so a hard reset leaves them
+alone.
+
+The SSH key used for this (`DEPLOY_SSH_KEY` secret) is a dedicated key, not a personal one, and is
+restricted server-side via a forced command in `authorized_keys`:
+
+```
+command="/home/btcwallet/btcs-faucet/deploy.sh",no-port-forwarding,no-X11-forwarding,no-agent-forwarding,no-pty ssh-ed25519 AAAA... github-actions-deploy-btcs-faucet
+```
+
+So even if the key ever leaked, it can only ever run that one script - no interactive shell, no
+other commands, no port/agent forwarding.
+
+Required repo secrets (Settings -> Secrets and variables -> Actions):
+
+| Secret | Value |
+| --- | --- |
+| `DEPLOY_SSH_HOST` | Server hostname/IP |
+| `DEPLOY_SSH_USER` | `btcwallet` |
+| `DEPLOY_SSH_KEY` | The deploy key's private key (PEM) |
 
 ## Notes on address validation
 
