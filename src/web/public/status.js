@@ -7,6 +7,8 @@ async function fetchStatus() {
       throw new Error('status endpoint returned ok:false');
     }
 
+    document.getElementById('service-status').className = 'status-indicator online';
+
     document.getElementById('rules-info').innerHTML = `
       <div class="stat-row">
         <span class="stat-label">Amount</span>
@@ -41,6 +43,7 @@ async function fetchStatus() {
     document.getElementById('update-time').textContent = new Date().toLocaleTimeString();
   } catch (err) {
     console.error('Failed to fetch faucet status:', err);
+    document.getElementById('service-status').className = 'status-indicator offline';
     document.getElementById('faucet-status').className = 'status-indicator offline';
     document.getElementById('faucet-info').innerHTML =
       '<div style="color: #f44336;">Failed to load faucet status</div>';
