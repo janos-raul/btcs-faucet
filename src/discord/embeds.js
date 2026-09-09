@@ -16,7 +16,12 @@ async function buildFaucetInfoEmbed({ includeBalance = false } = {}) {
     .setTitle('BTCS Faucet')
     .setDescription('Get free BTCS to try things out.')
     .addFields(
-      { name: 'How to claim', value: '`/faucet address:<your BTCS address>`' },
+      {
+        name: 'How to claim',
+        value:
+          'Type `/faucet` and enter your BTCS address when Discord prompts for it - just the ' +
+          'address itself, e.g. `bs1qxyz...` (no extra symbols needed).',
+      },
       {
         name: 'Limit',
         value: `Once per Discord account **and** once per address every **${config.faucet.cooldownHours}h**`,

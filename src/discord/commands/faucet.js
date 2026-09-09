@@ -17,7 +17,7 @@ const data = new SlashCommandBuilder()
   .addStringOption((option) =>
     option
       .setName('address')
-      .setDescription('Your BTCS wallet address (fine to paste extra text around it)')
+      .setDescription('Your BTCS wallet address, e.g. bs1q... (just the address, no < > symbols)')
       .setRequired(true)
   );
 
@@ -60,9 +60,17 @@ async function execute(interaction) {
         )}.`
       );
       break;
+    case 'placeholder_detected':
+      await interaction.editReply(
+        "That looks like the example text from the instructions, not a real address. " +
+          "Replace `<your BTCS address>` with your actual wallet address (no `<` or `>` needed) - " +
+          'e.g. `/faucet address:bs1qxyz...`'
+      );
+      break;
     case 'invalid_address':
       await interaction.editReply(
-        "I couldn't find a valid BTCS address in that. Double-check it and try again."
+        "I couldn't find a valid BTCS address in that. Make sure you're entering your real wallet " +
+          'address, not example or placeholder text.'
       );
       break;
     case 'faucet_empty':

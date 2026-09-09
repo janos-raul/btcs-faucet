@@ -53,6 +53,7 @@ router.post('/claim', limiter, express.json({ limit: '2kb' }), async (req, res) 
   if (result.reason === 'cooldown') return res.status(429).json(result);
   if (result.reason === 'rate_limited') return res.status(429).json(result);
   if (result.reason === 'invalid_address') return res.status(400).json(result);
+  if (result.reason === 'placeholder_detected') return res.status(400).json(result);
   if (result.reason === 'faucet_empty') return res.status(503).json(result);
   return res.status(502).json(result);
 });

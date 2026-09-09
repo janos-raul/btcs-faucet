@@ -21,6 +21,7 @@ const MIN_ATTEMPT_INTERVAL_MS = 5000;
  *   { ok: true, amount, txid }
  *   { ok: false, reason: 'rate_limited', retryAfterMs }
  *   { ok: false, reason: 'invalid_address' }
+ *   { ok: false, reason: 'placeholder_detected' }
  *   { ok: false, reason: 'cooldown', retryAfterMs }
  *   { ok: false, reason: 'faucet_empty' }
  *   { ok: false, reason: 'send_failed' }
@@ -36,7 +37,12 @@ async function claim(discordUserId, rawAddress) {
   const address = extractAddress(rawAddress);
 
   if (!address) {
-    return { ok: false, reason: 'invalid_address' };
+    // Common mistake: someone copies the example command literally,
+    // including the <angle-bracket> placeholder, instead of substituting
+    // their real address. Worth a more specific, actionable message than
+    // the generic "invalid address" - see faucet.js / claim.js.
+    const looksLikePlaceholder = typeof rawAddress === 'string' && /[<>]/.test(rawAddress);
+    return { ok: false, reason: looksLikePlaceholder ? 'placeholder_detected' : 'invalid_address' };
   }
 
   const reservation = db.reserveClaim(discordUserId, address, COOLDOWN_MS);

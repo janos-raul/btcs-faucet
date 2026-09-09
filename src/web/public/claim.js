@@ -24,8 +24,10 @@ function describeError(reason, retryAfterMs) {
       return `You (or that address) already claimed recently. Try again in ${formatDuration(retryAfterMs)}.`;
     case 'rate_limited':
       return `You're going a bit fast - try again in ${Math.ceil((retryAfterMs || 0) / 1000)}s.`;
+    case 'placeholder_detected':
+      return 'That looks like example text, not a real address - enter your actual BTCS wallet address (no < > symbols).';
     case 'invalid_address':
-      return "That doesn't look like a valid BTCS address.";
+      return "That doesn't look like a valid BTCS address. Make sure you're entering your real wallet address.";
     case 'faucet_empty':
       return 'The faucet is empty right now - check back later!';
     case 'captcha_failed':
