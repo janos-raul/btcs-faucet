@@ -9,7 +9,7 @@ async function fetchStatus() {
 
     document.getElementById('service-status').className = 'status-indicator online';
 
-    document.getElementById('rules-info').innerHTML = `
+    const rulesHtml = `
       <div class="stat-row">
         <span class="stat-label">Amount</span>
         <span class="stat-value">${data.minAmount} - ${data.maxAmount} BTCS</span>
@@ -19,6 +19,8 @@ async function fetchStatus() {
         <span class="stat-value">1 per account/address, every ${data.cooldownHours}h</span>
       </div>
     `;
+    document.getElementById('rules-info-web').innerHTML = rulesHtml;
+    document.getElementById('rules-info-discord').innerHTML = rulesHtml;
 
     const hasBalance = data.balance !== null;
     document.getElementById('faucet-status').className = 'status-indicator ' + (hasBalance ? 'online' : 'offline');
@@ -47,8 +49,9 @@ async function fetchStatus() {
     document.getElementById('faucet-status').className = 'status-indicator offline';
     document.getElementById('faucet-info').innerHTML =
       '<div style="color: #f44336;">Failed to load faucet status</div>';
-    document.getElementById('rules-info').innerHTML =
-      '<div style="color: #f44336;">Failed to load</div>';
+    const failedHtml = '<div style="color: #f44336;">Failed to load</div>';
+    document.getElementById('rules-info-web').innerHTML = failedHtml;
+    document.getElementById('rules-info-discord').innerHTML = failedHtml;
   }
 }
 

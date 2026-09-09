@@ -176,22 +176,6 @@
             color: #808080;
         }
 
-        .discord-link {
-            display: inline-block;
-            margin-top: 16px;
-            padding: 10px 22px;
-            background: #5865f2;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: background 0.2s ease;
-        }
-
-        .discord-link:hover {
-            background: #4752c4;
-        }
-
         .claim-form {
             margin-top: 10px;
         }
@@ -255,7 +239,6 @@
         <div class="header">
             <h1>⚡ Bitcoin Silver</h1>
             <p>Faucet</p>
-            <a class="discord-link" href="https://discord.gg/wCmdJGXFr7" target="_blank" rel="noopener">💬 Join our Discord</a>
         </div>
 
         <div class="status-grid">
@@ -264,28 +247,21 @@
                     <span class="status-indicator loading" id="service-status"></span>
                     ⚡ Bitcoin Silver Faucet
                 </h3>
-                <p>Free BTCS to test wallets, tip others, or try out the network - no cost, just
-                    claim it below via our Discord bot.</p>
-            </div>
-
-            <div class="status-card">
-                <h3>🚰 How to Claim</h3>
-                <p>Run this command in our Discord server:</p>
-                <code class="command">/faucet address:&lt;your BTCS address&gt;</code>
-                <div id="rules-info" class="loading">Loading...</div>
+                <p>Free BTCS to test wallets, tip others, or try out the network - no cost, claim it
+                    right here or via Discord below.</p>
             </div>
 
             <div class="status-card">
                 <h3>🌐 Claim via Website</h3>
+                <div id="rules-info-web" class="loading">Loading...</div>
                 <div id="web-claim-content" class="loading">Loading...</div>
             </div>
 
             <div class="status-card">
-                <h3>
-                    <span class="status-indicator loading" id="faucet-status"></span>
-                    💰 Faucet Wallet
-                </h3>
-                <div id="faucet-info" class="loading">Loading...</div>
+                <h3>💬 Claim via Discord</h3>
+                <p>Run this command in our Discord server:</p>
+                <code class="command">/faucet address:&lt;your BTCS address&gt;</code>
+                <div id="rules-info-discord" class="loading">Loading...</div>
             </div>
 
             <div class="status-card">
@@ -296,6 +272,14 @@
                         sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
                         style="width: 100%; max-width: 600px; border: none; border-radius: 8px;"></iframe>
                 </div>
+            </div>
+
+            <div class="status-card">
+                <h3>
+                    <span class="status-indicator loading" id="faucet-status"></span>
+                    💰 Faucet Wallet
+                </h3>
+                <div id="faucet-info" class="loading">Loading...</div>
             </div>
         </div>
 
