@@ -23,6 +23,21 @@ The public `/faucet` page also shows the live balance and topup address (via `GE
 unauthenticated/read-only - deliberately under `/faucet`, not `/api`, so it's covered by the same
 nginx location as the page itself; see the deployment note below).
 
+## Claiming from the web page
+
+The `/faucet` page can also let visitors claim directly (`POST /faucet/claim`), no Discord account
+needed - gated by a [Cloudflare Turnstile](https://developers.cloudflare.com/turnstile/) check
+instead of Discord's own account-creation friction. It's off by default and stays off until both
+`TURNSTILE_SITE_KEY` and `TURNSTILE_SECRET_KEY` are set (see `.env.example` for where to get them) -
+the page shows a "not available yet" message in the meantime rather than a broken form.
+
+Once enabled, a web claim runs through the exact same `faucetService.claim()` used by Discord - same
+amount range, same address validation, same anti-spam throttle - just keyed by `web:<client IP>`
+instead of a Discord user id. The per-*address* 24h cooldown still applies globally regardless of
+which path was used, so claiming an address once via Discord blocks a web claim to that same address
+too, and vice versa. IP-based identity is coarser than Discord's (multiple people behind the same
+NAT/VPN share one cooldown slot) - the CAPTCHA is the main abuse control here, not the IP keying.
+
 ## Architecture
 
 Single Node.js process, two logical halves talking over a signed loopback API (so they could be
@@ -80,11 +95,16 @@ native/optional deps. Fine for faucet-scale claim volume; the file is rewritten 
 ## Deploying at bitcoinsilver.eu/faucet
 
 Run this process behind a reverse proxy (nginx/Caddy) that terminates TLS for `bitcoinsilver.eu`
-and forwards **only `/faucet`** (the info page + `GET /faucet/status`) to this app's `PORT`.
-**`/api/claim` is not proxied publicly at all** - it's only ever called by this app's own Discord
-bot process over loopback (127.0.0.1), gated by the HMAC signature regardless. The app itself binds
-to `127.0.0.1` too (see `src/web/server.js`), so it's unreachable directly even if the host firewall
-were ever misconfigured.
+and forwards **only `/faucet`** (the info page, `GET /faucet/status`, and - if enabled -
+`POST /faucet/claim`) to this app's `PORT`. **`/api/claim` is not proxied publicly at all** - it's
+only ever called by this app's own Discord bot process over loopback (127.0.0.1), gated by the HMAC
+signature regardless. The app itself binds to `127.0.0.1` too (see `src/web/server.js`), so it's
+unreachable directly even if the host firewall were ever misconfigured.
+
+The app trusts `X-Forwarded-For` from exactly one hop (`app.set('trust proxy', 'loopback')`) so
+`req.ip` reflects the real visitor for the web-claim identity/rate-limiting - correct as long as
+nginx (or whatever reverse proxy) is the only thing between the app and the internet, on the same
+host. If you ever put another proxy/load balancer in front of nginx, this setting needs revisiting.
 
 ### Continuous deployment
 

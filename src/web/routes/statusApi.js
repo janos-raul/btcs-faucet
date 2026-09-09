@@ -15,7 +15,7 @@ router.get('/status', limiter, async (req, res) => {
   try {
     balance = await rpc.getBalance();
   } catch (err) {
-    logger.warn('Failed to fetch faucet balance for /api/status:', err.message);
+    logger.warn('Failed to fetch faucet balance for /faucet/status:', err.message);
   }
 
   res.status(200).json({
@@ -25,6 +25,8 @@ router.get('/status', limiter, async (req, res) => {
     minAmount: config.faucet.minAmount,
     maxAmount: config.faucet.maxAmount,
     cooldownHours: config.faucet.cooldownHours,
+    webClaimEnabled: Boolean(config.turnstile.siteKey && config.turnstile.secretKey),
+    turnstileSiteKey: config.turnstile.siteKey || null,
   });
 });
 

@@ -48,7 +48,15 @@ module.exports = {
     cooldownHours: num('FAUCET_COOLDOWN_HOURS', 24),
     topupAddress: process.env.FAUCET_TOPUP_ADDRESS || '',
   },
+  // Optional: web-form claiming (see src/web/routes/webClaimApi.js) stays
+  // disabled - the form shows a "not available" message - until both of
+  // these are set. Deliberately not required() so deploying this feature
+  // doesn't crash-loop the app before Cloudflare Turnstile is configured.
+  turnstile: {
+    siteKey: process.env.TURNSTILE_SITE_KEY || '',
+    secretKey: process.env.TURNSTILE_SECRET_KEY || '',
+  },
   db: {
-    path: process.env.DATABASE_PATH || './data/faucet.db',
+    path: process.env.DATABASE_PATH || './data/faucet.json',
   },
 };

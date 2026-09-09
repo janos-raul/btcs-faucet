@@ -191,6 +191,62 @@
         .discord-link:hover {
             background: #4752c4;
         }
+
+        .claim-form {
+            margin-top: 10px;
+        }
+
+        .claim-input {
+            width: 100%;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(192, 192, 192, 0.2);
+            border-radius: 8px;
+            color: #e0e0e0;
+            font-family: inherit;
+            font-size: 1em;
+            margin-bottom: 14px;
+        }
+
+        .claim-input:focus {
+            outline: none;
+            border-color: rgba(192, 192, 192, 0.5);
+        }
+
+        .claim-button {
+            display: inline-block;
+            padding: 10px 22px;
+            background: #c0c0c0;
+            color: #0a0a0a;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            margin-top: 14px;
+        }
+
+        .claim-button:hover:not(:disabled) {
+            background: #e0e0e0;
+        }
+
+        .claim-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .claim-result {
+            margin-top: 14px;
+        }
+
+        .claim-result.success {
+            color: #4caf50;
+        }
+
+        .claim-result.error {
+            color: #f44336;
+        }
     </style>
 </head>
 
@@ -217,6 +273,11 @@
                 <p>Run this command in our Discord server:</p>
                 <code class="command">/faucet address:&lt;your BTCS address&gt;</code>
                 <div id="rules-info" class="loading">Loading...</div>
+            </div>
+
+            <div class="status-card">
+                <h3>🌐 Claim via Website</h3>
+                <div id="web-claim-content" class="loading">Loading...</div>
             </div>
 
             <div class="status-card">
@@ -249,6 +310,8 @@
     </div>
 
     <script src="/faucet/status.js" defer></script>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <script src="/faucet/claim.js" defer></script>
 </body>
 
 </html>
