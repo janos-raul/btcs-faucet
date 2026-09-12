@@ -75,6 +75,6 @@ module.exports = {
     market: process.env.TA_MARKET || 'BTCS_USDC',
     resolutionMinutes: num('TA_RESOLUTION_MINUTES', 15),
     lookbackHours: num('TA_LOOKBACK_HOURS', 48),
-    cron: process.env.TA_CRON || '0 9 * * *',
+    cron: process.env.TA_CRON || '0 9,15 * * *',
   },
 };
