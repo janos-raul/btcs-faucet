@@ -59,4 +59,18 @@ module.exports = {
   db: {
     path: process.env.DATABASE_PATH || './data/faucet.json',
   },
+  // Optional: daily technical-analysis post (see src/services/taService.js).
+  // Stays disabled - the scheduler and /post-ta command both no-op - until
+  // both TA_CHANNEL_ID and ANTHROPIC_API_KEY are set. Deliberately not
+  // required() so deploying this feature can't crash-loop the app before
+  // it's configured.
+  ta: {
+    enabled: Boolean(process.env.TA_CHANNEL_ID && process.env.ANTHROPIC_API_KEY),
+    channelId: process.env.TA_CHANNEL_ID || '',
+    anthropicApiKey: process.env.ANTHROPIC_API_KEY || '',
+    market: process.env.TA_MARKET || 'BTCS_USDC',
+    resolutionMinutes: num('TA_RESOLUTION_MINUTES', 15),
+    lookbackHours: num('TA_LOOKBACK_HOURS', 48),
+    cron: process.env.TA_CRON || '0 9 * * *',
+  },
 };

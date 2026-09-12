@@ -2,6 +2,7 @@ const { Client, GatewayIntentBits, Collection, MessageFlags } = require('discord
 const config = require('../config');
 const logger = require('../utils/logger');
 const commands = require('./commands');
+const { startScheduler } = require('./scheduler');
 
 function createBot() {
   const client = new Client({ intents: [GatewayIntentBits.Guilds] });
@@ -13,6 +14,7 @@ function createBot() {
 
   client.once('clientReady', () => {
     logger.info(`Discord bot logged in as ${client.user.tag}`);
+    startScheduler(client);
   });
 
   client.on('interactionCreate', async (interaction) => {
