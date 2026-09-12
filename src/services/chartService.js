@@ -1,5 +1,10 @@
 const CHART_CANDLE_COUNT = 96; // ~24h of 15m bars - keeps the image readable
 
+// Matches nonkyc.io's own TradingView-based charting widget (dark theme,
+// teal-green up / coral-red down candles) so the generated chart looks
+// consistent with the manual screenshots this replaces.
+const CANDLE_COLORS = { up: '#26a69a', down: '#ef5350', unchanged: '#888888' };
+
 async function buildCandlestickChart(candles, { market, resolutionMinutes }) {
   const recent = candles.slice(-CHART_CANDLE_COUNT);
   const data = recent.map((c) => ({ x: c.time, o: c.open, h: c.high, l: c.low, c: c.close }));
@@ -7,7 +12,14 @@ async function buildCandlestickChart(candles, { market, resolutionMinutes }) {
   const config = {
     type: 'candlestick',
     data: {
-      datasets: [{ label: market, data }],
+      datasets: [
+        {
+          label: market,
+          data,
+          color: CANDLE_COLORS,
+          borderColor: CANDLE_COLORS,
+        },
+      ],
     },
     options: {
       plugins: {
