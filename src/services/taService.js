@@ -75,7 +75,10 @@ async function generateNarrative(stats) {
   const textBlock = response.content.find((block) => block.type === 'text');
   if (!textBlock) throw new Error('No text content in Claude response');
 
-  return JSON.parse(textBlock.text);
+  // Claude sometimes wraps the JSON in a ```json ... ``` fence despite being
+  // told not to - strip it before parsing rather than fail the whole post.
+  const fenced = textBlock.text.trim().match(/^```(?:json)?\s*([\s\S]*?)\s*```$/);
+  return JSON.parse(fenced ? fenced[1] : textBlock.text);
 }
 
 function buildTaEmbed({ ticker, levels, narrative, market, resolutionMinutes }) {
