@@ -22,10 +22,19 @@ async function updateTickerChannel(client, source, fetchTicker) {
   const channel = await client.channels.fetch(source.channelId);
   if (!channel) throw new Error(`Price ticker channel ${source.channelId} not found`);
 
-  if (channel.name === name) return;
+  if (channel.name !== name) {
+    await channel.setName(name);
+    logger.info(`Updated price ticker channel ${source.channelId} -> "${name}"`);
+  }
 
-  await channel.setName(name);
-  logger.info(`Updated price ticker channel ${source.channelId} -> "${name}"`);
+  // Pins it above the other channels in its category (or at the server's
+  // top level if uncategorized) - avoids fighting Discord's drag-and-drop
+  // ordering by hand, and self-heals if something ever bumps it out of
+  // place. No-op once it's already there.
+  if (channel.position !== 0) {
+    await channel.setPosition(0);
+    logger.info(`Repositioned price ticker channel ${source.channelId} to the top`);
+  }
 }
 
 module.exports = { updateTickerChannel };
