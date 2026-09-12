@@ -80,4 +80,18 @@ module.exports = {
     lookbackHours: num('TA_LOOKBACK_HOURS', 48),
     cron: process.env.TA_CRON || '0 9,15 * * *',
   },
+  // Optional: live price shown as the name of a (locked) voice channel,
+  // refreshed on a cron schedule (see src/discord/scheduler.js). Discord
+  // rate-limits channel renames to ~2 per 10 minutes, so keep the interval
+  // at 10 minutes or higher. Each exchange is its own independently
+  // optional block - add more (e.g. nestex) the same way once configured.
+  priceTicker: {
+    cron: process.env.PRICE_TICKER_CRON || '*/10 * * * *',
+    nonkyc: {
+      enabled: Boolean(process.env.PRICE_TICKER_NONKYC_CHANNEL_ID),
+      channelId: process.env.PRICE_TICKER_NONKYC_CHANNEL_ID || '',
+      market: process.env.PRICE_TICKER_NONKYC_MARKET || 'BTCS_USDC',
+      label: process.env.PRICE_TICKER_NONKYC_LABEL || 'NonKYC',
+    },
+  },
 };
