@@ -48,6 +48,13 @@ async function buildFaucetInfoEmbed({ includeBalance = false } = {}) {
     });
   }
 
+  if (config.devFundAddress) {
+    embed.addFields({
+      name: 'Support development',
+      value: `\`${config.devFundAddress}\``,
+    });
+  }
+
   return embed;
 }
 

@@ -59,6 +59,10 @@ module.exports = {
   db: {
     path: process.env.DATABASE_PATH || './data/faucet.json',
   },
+  // Optional: shown in /help and on the /faucet page (only when set) for
+  // people who want to support development rather than just refill the
+  // faucet wallet.
+  devFundAddress: process.env.DEV_FUND_ADDRESS || '',
   // Optional: daily technical-analysis post (see src/services/taService.js).
   // Stays disabled - the scheduler and /post-ta command both no-op - until
   // both TA_CHANNEL_ID and ANTHROPIC_API_KEY are set. Deliberately not

@@ -42,6 +42,19 @@ async function fetchStatus() {
     }
     document.getElementById('faucet-info').innerHTML = faucetInfo;
 
+    const devFundCard = document.getElementById('dev-fund-card');
+    if (data.devFundAddress) {
+      document.getElementById('dev-fund-info').innerHTML = `
+        <div class="stat-row">
+          <span class="stat-label">Address</span>
+          <span class="stat-value"><code>${data.devFundAddress}</code></span>
+        </div>
+      `;
+      devFundCard.hidden = false;
+    } else {
+      devFundCard.hidden = true;
+    }
+
     document.getElementById('update-time').textContent = new Date().toLocaleTimeString();
   } catch (err) {
     console.error('Failed to fetch faucet status:', err);
