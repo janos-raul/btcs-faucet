@@ -61,8 +61,11 @@ module.exports = {
   },
   // Optional: shown in /help and on the /faucet page (only when set) for
   // people who want to support development rather than just refill the
-  // faucet wallet.
+  // faucet wallet. The BTC/BCH addresses are web-page-only (kept out of
+  // /help to keep the Discord embed short).
   devFundAddress: process.env.DEV_FUND_ADDRESS || '',
+  devFundBtcAddress: process.env.DEV_FUND_ADDRESS_BTC || '',
+  devFundBchAddress: process.env.DEV_FUND_ADDRESS_BCH || '',
   // Optional: daily technical-analysis post (see src/services/taService.js).
   // Stays disabled - the scheduler and /post-ta command both no-op - until
   // both TA_CHANNEL_ID and ANTHROPIC_API_KEY are set. Deliberately not

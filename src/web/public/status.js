@@ -43,13 +43,23 @@ async function fetchStatus() {
     document.getElementById('faucet-info').innerHTML = faucetInfo;
 
     const devFundCard = document.getElementById('dev-fund-card');
-    if (data.devFundAddress) {
-      document.getElementById('dev-fund-info').innerHTML = `
-        <div class="stat-row">
-          <span class="stat-label">Address</span>
-          <span class="stat-value"><code>${data.devFundAddress}</code></span>
-        </div>
-      `;
+    const devFundAddresses = [
+      ['BTCS', data.devFundAddress],
+      ['BTC', data.devFundBtcAddress],
+      ['BCH', data.devFundBchAddress],
+    ].filter(([, address]) => address);
+
+    if (devFundAddresses.length > 0) {
+      document.getElementById('dev-fund-info').innerHTML = devFundAddresses
+        .map(
+          ([label, address]) => `
+            <div class="stat-row">
+              <span class="stat-label">${label}</span>
+              <span class="stat-value"><code>${address}</code></span>
+            </div>
+          `
+        )
+        .join('');
       devFundCard.hidden = false;
     } else {
       devFundCard.hidden = true;

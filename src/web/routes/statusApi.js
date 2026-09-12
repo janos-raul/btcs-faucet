@@ -23,6 +23,8 @@ router.get('/status', limiter, async (req, res) => {
     balance,
     topupAddress: config.faucet.topupAddress || null,
     devFundAddress: config.devFundAddress || null,
+    devFundBtcAddress: config.devFundBtcAddress || null,
+    devFundBchAddress: config.devFundBchAddress || null,
     minAmount: config.faucet.minAmount,
     maxAmount: config.faucet.maxAmount,
     cooldownHours: config.faucet.cooldownHours,
