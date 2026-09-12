@@ -7,9 +7,10 @@ function formatChannelName(label, ticker) {
 }
 
 /**
- * Renames a (typically locked, display-only) voice channel to show the
- * current price. Skips the API call entirely when the name hasn't actually
- * changed, since Discord only allows ~2 channel renames per 10 minutes.
+ * Renames a channel (a locked voice channel, or a category - both allow
+ * free-form names, unlike text channels) to show the current price. Skips
+ * the API call entirely when the name hasn't actually changed, since
+ * Discord only allows ~2 channel renames per 10 minutes.
  *
  * @param {import('discord.js').Client} client
  * @param {{ channelId: string, market: string, label: string }} source
