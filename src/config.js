@@ -93,5 +93,11 @@ module.exports = {
       market: process.env.PRICE_TICKER_NONKYC_MARKET || 'BTCS_USDC',
       label: process.env.PRICE_TICKER_NONKYC_LABEL || 'NonKYC',
     },
+    nestex: {
+      enabled: Boolean(process.env.PRICE_TICKER_NESTEX_CHANNEL_ID),
+      channelId: process.env.PRICE_TICKER_NESTEX_CHANNEL_ID || '',
+      market: process.env.PRICE_TICKER_NESTEX_MARKET || 'BTCS_USDT',
+      label: process.env.PRICE_TICKER_NESTEX_LABEL || 'NestEx',
+    },
   },
 };

@@ -3,6 +3,7 @@ const config = require('../config');
 const logger = require('../utils/logger');
 const taService = require('../services/taService');
 const nonkycClient = require('../services/nonkycClient');
+const nestexClient = require('../services/nestexClient');
 const { updateTickerChannel } = require('../services/priceTickerService');
 
 function startTaScheduler(client) {
@@ -24,8 +25,7 @@ function startTaScheduler(client) {
 function startPriceTickers(client) {
   const sources = [
     ['NonKYC', config.priceTicker.nonkyc, nonkycClient.getTicker],
-    // Add more exchanges here the same way once configured, e.g.:
-    // ['NestEx', config.priceTicker.nestex, nestexClient.getTicker],
+    ['NestEx', config.priceTicker.nestex, nestexClient.getTicker],
   ].filter(([, source]) => source.enabled);
 
   if (sources.length === 0) return;
