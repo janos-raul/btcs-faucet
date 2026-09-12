@@ -101,7 +101,7 @@ function buildTaEmbed({ ticker, levels, narrative, market, resolutionMinutes }) 
       { name: 'Outlook', value: narrative.outlook }
     )
     .setImage(`attachment://${CHART_FILENAME}`)
-    .setFooter({ text: `Chart via NonKYC (${market})` })
+    .setFooter({ text: `Data: NonKYC (${market})` })
     .setColor(0xf7931a)
     .setTimestamp();
 }
