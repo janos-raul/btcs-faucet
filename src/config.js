@@ -79,6 +79,11 @@ module.exports = {
     resolutionMinutes: num('TA_RESOLUTION_MINUTES', 15),
     lookbackHours: num('TA_LOOKBACK_HOURS', 48),
     cron: process.env.TA_CRON || '0 9,15 * * *',
+    // Deletes the bot's own TA posts older than this from the channel, on
+    // its own schedule below - independent of TA_CRON so bumping how often
+    // updates are posted never requires touching retention separately.
+    cleanupDays: num('TA_CLEANUP_DAYS', 7),
+    cleanupCron: process.env.TA_CLEANUP_CRON || '0 2 * * *',
   },
   // Optional: live price shown as the name of a (locked) voice channel,
   // refreshed on a cron schedule (see src/discord/scheduler.js). Discord

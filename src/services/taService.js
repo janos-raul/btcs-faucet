@@ -151,4 +151,52 @@ async function postDailyUpdate(client) {
   logger.info(`Posted daily TA update to channel ${config.ta.channelId}`);
 }
 
-module.exports = { postDailyUpdate, buildDailyUpdate, computeKeyLevels };
+// Discord only allows bulk-deleting messages younger than this - anything
+// older has to be deleted one at a time.
+const BULK_DELETE_MAX_AGE_MS = 14 * 24 * 60 * 60 * 1000;
+// Safety cap on how many pages of history to walk per run - this is a
+// dedicated low-traffic channel, so the bot's own backlog is all we expect.
+const CLEANUP_MAX_BATCHES = 20;
+
+async function cleanupOldPosts(client) {
+  if (!config.ta.enabled) return;
+
+  const channel = await client.channels.fetch(config.ta.channelId);
+  if (!channel || !channel.isTextBased()) return;
+
+  const cutoff = Date.now() - config.ta.cleanupDays * 24 * 60 * 60 * 1000;
+  const bulkDeleteCutoff = Date.now() - BULK_DELETE_MAX_AGE_MS;
+
+  let before;
+  let deleted = 0;
+
+  for (let i = 0; i < CLEANUP_MAX_BATCHES; i++) {
+    const batch = await channel.messages.fetch({ limit: 100, ...(before && { before }) });
+    if (batch.size === 0) break;
+
+    const stale = batch.filter((msg) => msg.author.id === client.user.id && msg.createdTimestamp < cutoff);
+    const bulk = stale.filter((msg) => msg.createdTimestamp >= bulkDeleteCutoff);
+    const ancient = stale.filter((msg) => msg.createdTimestamp < bulkDeleteCutoff);
+
+    if (bulk.size === 1) {
+      await bulk.first().delete();
+      deleted += 1;
+    } else if (bulk.size > 1) {
+      await channel.bulkDelete(bulk);
+      deleted += bulk.size;
+    }
+    for (const msg of ancient.values()) {
+      await msg.delete();
+      deleted += 1;
+    }
+
+    before = batch.last().id;
+    if (batch.size < 100) break; // reached the start of the channel
+  }
+
+  if (deleted > 0) {
+    logger.info(`TA cleanup: deleted ${deleted} old bot message(s) from channel ${config.ta.channelId}`);
+  }
+}
+
+module.exports = { postDailyUpdate, buildDailyUpdate, computeKeyLevels, cleanupOldPosts };
