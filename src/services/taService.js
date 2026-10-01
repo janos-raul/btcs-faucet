@@ -151,9 +151,6 @@ async function postDailyUpdate(client) {
   logger.info(`Posted daily TA update to channel ${config.ta.channelId}`);
 }
 
-// Discord only allows bulk-deleting messages younger than this - anything
-// older has to be deleted one at a time.
-const BULK_DELETE_MAX_AGE_MS = 14 * 24 * 60 * 60 * 1000;
 // Safety cap on how many pages of history to walk per run - this is a
 // dedicated low-traffic channel, so the bot's own backlog is all we expect.
 const CLEANUP_MAX_BATCHES = 20;
@@ -165,7 +162,6 @@ async function cleanupOldPosts(client) {
   if (!channel || !channel.isTextBased()) return;
 
   const cutoff = Date.now() - config.ta.cleanupDays * 24 * 60 * 60 * 1000;
-  const bulkDeleteCutoff = Date.now() - BULK_DELETE_MAX_AGE_MS;
 
   let before;
   let deleted = 0;
@@ -175,17 +171,11 @@ async function cleanupOldPosts(client) {
     if (batch.size === 0) break;
 
     const stale = batch.filter((msg) => msg.author.id === client.user.id && msg.createdTimestamp < cutoff);
-    const bulk = stale.filter((msg) => msg.createdTimestamp >= bulkDeleteCutoff);
-    const ancient = stale.filter((msg) => msg.createdTimestamp < bulkDeleteCutoff);
 
-    if (bulk.size === 1) {
-      await bulk.first().delete();
-      deleted += 1;
-    } else if (bulk.size > 1) {
-      await channel.bulkDelete(bulk);
-      deleted += bulk.size;
-    }
-    for (const msg of ancient.values()) {
+    // Deleted one at a time rather than via bulkDelete: bulk deletion needs
+    // the Manage Messages permission even for the bot's own messages, while
+    // single deletes of its own messages don't, and volume here is tiny.
+    for (const msg of stale.values()) {
       await msg.delete();
       deleted += 1;
     }

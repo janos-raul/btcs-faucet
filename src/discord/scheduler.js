@@ -21,15 +21,13 @@ function startTaScheduler(client) {
 
   logger.info(`TA scheduler started (cron "${config.ta.cron}" UTC, channel ${config.ta.channelId})`);
 
-  cron.schedule(
-    config.ta.cleanupCron,
-    () => {
-      taService.cleanupOldPosts(client).catch((err) => {
-        logger.error('Scheduled TA cleanup failed:', err);
-      });
-    },
-    { timezone: 'UTC' }
-  );
+  const runCleanup = () =>
+    taService.cleanupOldPosts(client).catch((err) => {
+      logger.error('Scheduled TA cleanup failed:', err);
+    });
+
+  cron.schedule(config.ta.cleanupCron, runCleanup, { timezone: 'UTC' });
+  runCleanup(); // catch up immediately instead of waiting for the first tick
 
   logger.info(
     `TA cleanup scheduler started (cron "${config.ta.cleanupCron}" UTC, deletes bot messages older than ${config.ta.cleanupDays}d)`
